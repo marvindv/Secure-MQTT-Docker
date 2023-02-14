@@ -5,6 +5,11 @@ authentication.  Most actions including the generation of certificates
 are performed using GNU make to reduce errors introduced with manual
 procedures.  You can print help using the command `make help`.
 
+## NOTE
+
+- Add each cert to `CLIENT_CERTS` in the Makefile
+- Adjust the variabes in the Makefile (lines 100ff.)
+
 ## Setup
 
 All MQTT clients must not only have a valid certificate, but they also
