@@ -1,3 +1,5 @@
+# From https://github.com/mchestr/Secure-MQTT-Docker/blob/master/Makefile
+# Replaced `docker-compose` with `docker compose`
 SHELL := /bin/bash
 
 # The version of the code.  Needed if you want to embed this in the
@@ -5,8 +7,8 @@ SHELL := /bin/bash
 GIT_VERSION:=$(shell git describe --abbrev=6 --dirty --always --tags)
 
 # check for dependencies to build the application (docker,
-# docker-compose, etc)
-EXECUTABLES = sudo nohup git docker docker-compose pytest-3 openssl
+# ~~docker-compose~~, etc)
+EXECUTABLES = sudo nohup git docker pytest-3 openssl
 K := $(foreach exec,$(EXECUTABLES),\
         $(if $(shell which $(exec)),some string,$(error "No $(exec) in PATH")))
 
@@ -48,7 +50,7 @@ host-setup: ## Setup your build environment
 
 .PHONY: build
 build:	host-setup ## Builds the application
-	$(Q)docker-compose build
+	$(Q)docker compose build
 
 .PHONY: clean ## Cleans up miscellaneous files except generated certificates and persistent data
 clean:
@@ -63,13 +65,13 @@ distclean:
 
 .PHONY: start
 start:	build $(CERTS) $(MOUNTED_VOLUMES_TOP)/mqtt/config/mosquitto.conf $(CLIENT_CERTS) $(MOUNTED_VOLUMES_TOP)/mqtt/config/passwords.txt ## Starts the application
-	$(Q)(docker-compose ps -q | wc -l | grep -q 0) || (echo "Already running" && docker-compose ps && /bin/false)
-	$(Q)nohup docker-compose up -d &
+	$(Q)(docker compose ps -q | wc -l | grep -q 0) || (echo "Already running" && docker compose ps && /bin/false)
+	$(Q)nohup docker compose up -d &
 	@echo "Application Started - VERSION $(GIT_VERSION)"
 
 .PHONY: stop
 stop: ## Stops the application
-	$(Q)docker-compose down
+	$(Q)docker compose down
 
 .PHONY: useradd
 useradd: $(MOUNTED_VOLUMES_TOP)/mqtt/config/passwords.txt ## Manually adds an MQTT client. You must define makefile variables MQTT_USER and MQTT_PASSWORD.
